@@ -18,6 +18,7 @@ function divide(num1, num2) {
 }
 
 function equals(operator, num1, num2) {
+    
     if (operator == "+") {
         return add(num1, num2)
     } else if (operator == "-") {
@@ -30,3 +31,38 @@ function equals(operator, num1, num2) {
         return 'error'
     }
 }
+
+let display = []
+let num1 = null
+let num2 = null
+let operator = ''
+let lastBtnPressed = ''
+
+const operatorBtns = document.querySelectorAll('.operators')
+const screen = document.querySelector('.screen')
+
+operatorBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+        
+        if (operator == '') {
+            operator = btn.textContent
+            display.push(operator)
+            screen.textContent += operator
+        } else {
+            // execute current operation with equals() //
+            operator = ''
+        }        
+    })
+})
+
+const numberBtns = document.querySelectorAll('.numbers')
+
+numberBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+        
+        display.push(btn.id)
+        screen.textContent += btn.id
+        console.log(display)
+        
+    })
+})
