@@ -30,3 +30,4 @@ function equals(operator, num1, num2) {
         return 'error'
     }
 }
+
