@@ -32,7 +32,7 @@ function equals(operator, num1, num2) {
     }
 }
 
-let display = []
+let display = ''
 let num1 = null
 let num2 = null
 let operator = ''
@@ -40,18 +40,27 @@ let lastBtnPressed = ''
 
 const operatorBtns = document.querySelectorAll('.operators')
 const screen = document.querySelector('.screen')
+const equal = document.querySelector('.equal')
 
 operatorBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
         
         if (operator == '') {
+
             operator = btn.textContent
-            display.push(operator)
-            screen.textContent += operator
+
+            //if (num1 == null) {
+                //num1 = parseInt(display)
+            //} else {
+               //num2 = parseInt(display)
+            //}
+            //display = ''
+            
+            screen.textContent = display
         } else {
             // execute current operation with equals() //
-            operator = ''
-        }        
+        } 
+        operator = ''       
     })
 })
 
@@ -60,9 +69,14 @@ const numberBtns = document.querySelectorAll('.numbers')
 numberBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
         
-        display.push(btn.id)
+        display += btn.id
         screen.textContent += btn.id
-        console.log(display)
         
     })
+})
+
+equal.addEventListener('click', () => {
+    console.log(num1)
+    console.log(num2)
+    screen.textContent = equals(operator, num1, num2)
 })
