@@ -1,20 +1,20 @@
 function add(num1, num2) {
-  return num1 + num2;
+  return (num1 + num2).toFixed(5);
 }
 
 function multiply(num1, num2) {
-  return num1 * num2;
+  return (num1 * num2).toFixed(5);
 }
 
 function subtract(num1, num2) {
-  return num1 - num2;
+  return (num1 - num2).toFixed(5);
 }
 
 function divide(num1, num2) {
   if (num2 == 0) {
     return "Infinity";
   }
-  return num1 / num2;
+  return (num1 / num2).toFixed(5);
 }
 
 function equals(operator, num1, num2) {
@@ -81,8 +81,6 @@ equal.addEventListener("click", () => {
 
     // extract num1, operator and num2 from string
     const operationStr = display.match(/(-?\d*\.?\d+)([+\-x÷])(-?\d*\.?\d+)/);
-    console.log(display)
-    console.log(operationStr)
     
     num1 = Number(operationStr[1]);  // num1 (including negative)
     operator = operationStr[2];      // operator
