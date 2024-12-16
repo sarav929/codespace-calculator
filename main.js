@@ -75,21 +75,53 @@ numberBtns.forEach((btn) => {
   });
 });
 
+// NEW EQUAL FUNCTION: handling negative numbers //
+
 equal.addEventListener("click", () => {
-  const result = display.split(/[+\-x÷\s]/);
-  num1 = Number(result[0]);
-  num2 = Number(result[1]);
-  operator = display.match(/[+\-x÷\s]/)[0];
 
-  screen.textContent = equals(operator, num1, num2);
-  operatorSelected = false;
+    // extract num1, operator and num2 from string
+    const operationStr = display.match(/(-?\d*\.?\d+)([+\-x÷])(-?\d*\.?\d+)/);
+    console.log(display)
+    console.log(operationStr)
+    
+    num1 = Number(operationStr[1]);  // num1 (including negative)
+    operator = operationStr[2];      // operator
+    num2 = Number(operationStr[3]);  // num2 (including negative)
 
-  num1 = equals(operator, num1, num2);
-  operator = "";
-  num2 = null;
-  display = num1;
-  isDecimal = false;
+    // calculate
+    const result = equals(operator, num1, num2);
+
+    // display the result
+    screen.textContent = result;
+    display = result.toString();
+
+    // reset variables and set result as num1 for next operation
+    operatorSelected = false;
+    num1 = result;
+    num2 = null;
+    operator = "";
+    isDecimal = false;
+
 });
+
+
+// OLD EQUAL FUNCTION - not handling negative numbers //
+
+//equal.addEventListener("click", () => {
+  //const result = display.split(/[+\-x÷\s]/);
+  //num1 = Number(result[0]);
+  //num2 = Number(result[1]);
+  //operator = display.match(/[+\-x÷\s]/)[0];
+
+  //screen.textContent = equals(operator, num1, num2);
+  //operatorSelected = false;
+
+  //num1 = equals(operator, num1, num2);
+  //operator = "";
+  //num2 = null;
+  //display = num1;
+  //isDecimal = false;
+//});
 
 clear.addEventListener("click", () => {
   num1 = null;
