@@ -48,7 +48,7 @@ function equals(operator, num1, num2) {
     return add(num1, num2);
   } else if (operator == '-') {
     return subtract(num1, num2);
-  } else if (operator == 'x') {
+  } else if (operator == '×') {
     return multiply(num1, num2);
   } else if (operator == '÷') {
     return divide(num1, num2);
@@ -105,7 +105,7 @@ numberBtns.forEach((btn) => {
 
 equal.addEventListener('click', () => {
   // extract num1, operator and num2 from string
-  const operationStr = display.match(/(-?\d*\.?\d+)([+\-x÷])(-?\d*\.?\d+)/);
+  const operationStr = display.match(/(-?\d*\.?\d+)([+\-×÷])(-?\d*\.?\d+)/);
 
   num1 = Number(operationStr[1]); // num1 (including negative)
   operator = operationStr[2]; // operator
@@ -129,10 +129,10 @@ equal.addEventListener('click', () => {
 // OLD EQUAL FUNCTION - not handling negative numbers //
 
 //equal.addEventListener("click", () => {
-//const result = display.split(/[+\-x÷\s]/);
+//const result = display.split(/[+\-×÷\s]/);
 //num1 = Number(result[0]);
 //num2 = Number(result[1]);
-//operator = display.match(/[+\-x÷\s]/)[0];
+//operator = display.match(/[+\-×÷\s]/)[0];
 
 //screen.textContent = equals(operator, num1, num2);
 //operatorSelected = false;
@@ -164,7 +164,7 @@ decimal.addEventListener('click', () => {
       display == '' ||
       display[display.length - 1] == '+' ||
       display[display.length - 1] == '-' ||
-      display[display.length - 1] == 'x' ||
+      display[display.length - 1] == '×' ||
       display[display.length - 1] == '÷'
     ) {
       screen.textContent += '0.';
