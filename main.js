@@ -163,9 +163,9 @@ equal.addEventListener('click', () => {
 
   if (!operationStr) return;
 
-  num1 = parseInt(Number(operationStr[1])); // num1 (including negative)
+  num1 = Number(operationStr[1]); // num1 (including negative)
   operator = operationStr[2]; // operator
-  num2 = parseInt(Number(operationStr[3])); // num2 (including negative)
+  num2 = Number(operationStr[3]); // num2 (including negative)
 
   // calculate
   const result = equals(operator, num1, num2);
