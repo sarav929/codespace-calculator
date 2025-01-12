@@ -20,6 +20,14 @@ describe('Test calculator functionality', () => {
   });
 
   // Ensure entering numbers like 007 displays correctly as 7.
+  it('First number gets rounded correctly without leading zeros', () => {
+    cy.visit('http://127.0.0.1:3000/home.html');
+    cy.get('#0').click();
+    cy.get('#0').click();
+    cy.get('#7').click();
+    cy.get('#plus').click();
+    cy.get('.screen').should('have.text', '7+');
+  });
 
   // Verify decimal operations (e.g., 2.5 + 0.5 = 3).
   it('Verify that operations with decimals are handles correctly (2.5 + 0.5 = 3)', () => {
