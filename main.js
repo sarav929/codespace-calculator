@@ -2,7 +2,7 @@
 
 function roundResult(result) {
   // check if result is a decimal with more than 5 places
-  if (result % 1 !== 0 && result.toString().split(".")[1]?.length > 5) {
+  if (result % 1 !== 0 && result.toString().split('.')[1]?.length > 5) {
     // round to 5 decimal places and return as a number
     return Number(result.toFixed(5));
   }
@@ -35,7 +35,7 @@ function subtract(num1, num2) {
 
 function divide(num1, num2) {
   if (num2 == 0) {
-    return "Infinity";
+    return 'Infinity';
   }
   const result = num1 / num2;
   return roundResult(result);
@@ -44,40 +44,40 @@ function divide(num1, num2) {
 // equals
 
 function equals(operator, num1, num2) {
-  if (operator == "+") {
+  if (operator == '+') {
     return add(num1, num2);
-  } else if (operator == "-") {
+  } else if (operator == '-') {
     return subtract(num1, num2);
-  } else if (operator == "×") {
+  } else if (operator == '×') {
     return multiply(num1, num2);
-  } else if (operator == "÷") {
+  } else if (operator == '÷') {
     return divide(num1, num2);
   } else {
-    return "error";
+    return 'error';
   }
 }
 
-let display = "";
+let display = '';
 let num1 = null;
 let num2 = null;
-let operator = "";
+let operator = '';
 let operatorSelected = false;
 let isDecimal = false;
 let canStartWithMinus = true; // New flag to control when minus can be used as a negative sign
 
-const operatorBtns = document.querySelectorAll(".operators");
-const screen = document.querySelector(".screen");
-const equal = document.querySelector(".equal");
-const clear = document.querySelector(".clear");
-const decimal = document.getElementById("decimal");
-const numberBtns = document.querySelectorAll(".numbers");
+const operatorBtns = document.querySelectorAll('.operators');
+const screen = document.querySelector('.screen');
+const equal = document.querySelector('.equal');
+const clear = document.querySelector('.clear');
+const decimal = document.getElementById('decimal');
+const numberBtns = document.querySelectorAll('.numbers');
 
 function isOperator(char) {
-  return ["+", "-", "×", "÷"].includes(char);
+  return ['+', '-', '×', '÷'].includes(char);
 }
 
 operatorBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
+  btn.addEventListener('click', () => {
     const lastChar = display.slice(-1);
     const secondLastChar = display.slice(-2, -1);
 
@@ -85,40 +85,54 @@ operatorBtns.forEach((btn) => {
     const hasCompleteOperation = display.match(
       /(-?\d*\.?\d+)([+\-×÷])(-?\d*\.?\d+)/
     );
+
     if (hasCompleteOperation) {
       return; // Don't allow more operations
     }
 
+    // Remove leading zeros from num1 before adding operator to screen
+    if (display && !isOperator(lastChar) && !operatorSelected) {
+      // Remove leading zeros
+      const cleanedNum1 = Number(display).toString();
+      display = cleanedNum1;
+      // Update the screen with cleaned value
+      screen.textContent = display;
+    }
+
     //if operator selected, don't allow another
-    if (operatorSelected && btn.id !== "minus") {
+    if (operatorSelected && btn.id !== 'minus') {
       return;
     }
 
-    if (btn.id === "minus") {
+    if (btn.id === 'minus') {
       // Case 1: Starting with minus (negative number)
-      if (display === "" || display === "-") {  // Added check for "-"
-        if (display === "") {  // Only add minus if display is empty
-          display += "-";
+      if (display === '' || display === '-') {
+        // Added check for "-"
+        if (display === '') {
+          // Only add minus if display is empty
+          display += '-';
           screen.textContent = display;
         }
         return;
       }
       // Case 2: Minus after other operators (for negative numbers)
-      if (isOperator(lastChar) && !isOperator(secondLastChar)) {  // Removed !operatorSelected check
-        display += "-";
+      if (isOperator(lastChar) && !isOperator(secondLastChar)) {
+        // Removed !operatorSelected check
+        display += '-';
         screen.textContent = display;
         return;
       }
       // Case 3: Double minus for subtraction
-      if (lastChar === "-" && !isOperator(secondLastChar) && display !== "-") {  // Removed !operatorSelected check
-        display += "-";
+      if (lastChar === '-' && !isOperator(secondLastChar) && display !== '-') {
+        // Removed !operatorSelected check
+        display += '-';
         screen.textContent = display;
         return;
       }
     }
 
     // Normal operator handling (including minus as a regular operator)
-    if (display !== "" && display !== "-" && !isOperator(lastChar)) {
+    if (display !== '' && display !== '-' && !isOperator(lastChar)) {
       operatorSelected = true;
       operator = btn.textContent;
       display += operator;
@@ -134,7 +148,7 @@ operatorBtns.forEach((btn) => {
 });
 
 numberBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
+  btn.addEventListener('click', () => {
     display += btn.id;
     screen.textContent = display;
     canStartWithMinus = false; // Disable minus as negative sign after a number
@@ -143,15 +157,15 @@ numberBtns.forEach((btn) => {
 
 // NEW EQUAL FUNCTION: handling negative numbers //
 
-equal.addEventListener("click", () => {
+equal.addEventListener('click', () => {
   // extract num1, operator and num2 from string
   const operationStr = display.match(/(-?\d*\.?\d+)([+\-×÷])(-?\d*\.?\d+)/);
 
   if (!operationStr) return;
 
-  num1 = Number(operationStr[1]); // num1 (including negative)
+  num1 = parseInt(Number(operationStr[1])); // num1 (including negative)
   operator = operationStr[2]; // operator
-  num2 = Number(operationStr[3]); // num2 (including negative)
+  num2 = parseInt(Number(operationStr[3])); // num2 (including negative)
 
   // calculate
   const result = equals(operator, num1, num2);
@@ -164,7 +178,7 @@ equal.addEventListener("click", () => {
   operatorSelected = false;
   num1 = result;
   num2 = null;
-  operator = "";
+  operator = '';
   isDecimal = false;
   canStartWithMinus = true;
 });
@@ -187,35 +201,35 @@ equal.addEventListener("click", () => {
 //isDecimal = false;
 //});
 
-clear.addEventListener("click", () => {
+clear.addEventListener('click', () => {
   num1 = null;
   num2 = null;
-  operator = "";
-  display = "";
+  operator = '';
+  display = '';
   screen.textContent = display;
   operatorSelected = false;
   isDecimal = false;
   canStartWithMinus = true;
 });
 
-decimal.addEventListener("click", () => {
+decimal.addEventListener('click', () => {
   //press once - disabled
   //press operator - enabled
   if (isDecimal == false) {
     isDecimal = true;
 
     if (
-      display == "" ||
-      display[display.length - 1] == "+" ||
-      display[display.length - 1] == "-" ||
-      display[display.length - 1] == "×" ||
-      display[display.length - 1] == "÷"
+      display == '' ||
+      display[display.length - 1] == '+' ||
+      display[display.length - 1] == '-' ||
+      display[display.length - 1] == '×' ||
+      display[display.length - 1] == '÷'
     ) {
-      screen.textContent += "0.";
-      display += "0.";
+      screen.textContent += '0.';
+      display += '0.';
     } else {
-      screen.textContent += ".";
-      display += ".";
+      screen.textContent += '.';
+      display += '.';
     }
   }
 });
