@@ -64,6 +64,8 @@ let operator = '';
 let operatorSelected = false;
 let isDecimal = false;
 let canStartWithMinus = true; // New flag to control when minus can be used as a negative sign
+let waitingForSecondNumber = false;
+
 
 const operatorBtns = document.querySelectorAll('.operators');
 const screen = document.querySelector('.screen');
@@ -81,35 +83,11 @@ operatorBtns.forEach((btn) => {
     const lastChar = display.slice(-1);
     const secondLastChar = display.slice(-2, -1);
 
-    // Check if there's already a complete operation (number operator number)
-    const hasCompleteOperation = display.match(
-      /(-?\d*\.?\d+)([+\-×÷])(-?\d*\.?\d+)/
-    );
-
-    if (hasCompleteOperation) {
-      return; // Don't allow more operations
-    }
-
-    // Remove leading zeros from num1 before adding operator to screen
-    if (display && !isOperator(lastChar) && !operatorSelected) {
-      // Remove leading zeros
-      const cleanedNum1 = Number(display).toString();
-      display = cleanedNum1;
-      // Update the screen with cleaned value
-      screen.textContent = display;
-    }
-
-    //if operator selected, don't allow another
-    if (operatorSelected && btn.id !== 'minus') {
-      return;
-    }
-
+    // Handle minus sign for negative numbers
     if (btn.id === 'minus') {
       // Case 1: Starting with minus (negative number)
       if (display === '' || display === '-') {
-        // Added check for "-"
         if (display === '') {
-          // Only add minus if display is empty
           display += '-';
           screen.textContent = display;
         }
@@ -117,28 +95,37 @@ operatorBtns.forEach((btn) => {
       }
       // Case 2: Minus after other operators (for negative numbers)
       if (isOperator(lastChar) && !isOperator(secondLastChar)) {
-        // Removed !operatorSelected check
         display += '-';
         screen.textContent = display;
         return;
       }
       // Case 3: Double minus for subtraction
       if (lastChar === '-' && !isOperator(secondLastChar) && display !== '-') {
-        // Removed !operatorSelected check
         display += '-';
         screen.textContent = display;
         return;
       }
     }
 
-    // Normal operator handling (including minus as a regular operator)
+    // If we're waiting for a second number and have one, evaluate the expression
+    if (waitingForSecondNumber && !isOperator(lastChar)) {
+      const numbers = display.split(/[+\-×÷]/);
+      num1 = Number(numbers[0]);
+      num2 = Number(numbers[1]);
+      
+      const result = equals(operator, num1, num2);
+      display = result.toString();
+      num1 = result;
+    }
+
+    // Add the new operator if we have a number
     if (display !== '' && display !== '-' && !isOperator(lastChar)) {
-      operatorSelected = true;
       operator = btn.textContent;
       display += operator;
-      screen.textContent = display;
-      canStartWithMinus = true;
+      waitingForSecondNumber = true;
     }
+
+    screen.textContent = display;
 
     if (isDecimal) {
       isDecimal = false;
@@ -149,38 +136,59 @@ operatorBtns.forEach((btn) => {
 
 numberBtns.forEach((btn) => {
   btn.addEventListener('click', () => {
-    display += btn.id;
+    // If display is just '0' and we're typing another number, replace the 0
+    if (display === '0' && btn.id !== '.') {
+      display = btn.id;
+    }
+    // If we have an operator, check if the current number being typed starts with 0
+    else if (isOperator(display.slice(-2, -1))) {
+      if (display.slice(-1) === '0' && btn.id !== '.') {
+        // Remove the leading 0 and add the new number
+        display = display.slice(0, -1) + btn.id;
+      } else {
+        display += btn.id;
+      }
+    } 
+    // Normal case: just add the number
+    else {
+      display += btn.id;
+    }
+    
     screen.textContent = display;
-    canStartWithMinus = false; // Disable minus as negative sign after a number
+    canStartWithMinus = false;
   });
 });
 
-// NEW EQUAL FUNCTION: handling negative numbers //
-
+// Update equals handler
 equal.addEventListener('click', () => {
-  // extract num1, operator and num2 from string
-  const operationStr = display.match(/(-?\d*\.?\d+)([+\-×÷])(-?\d*\.?\d+)/);
+  if (!display || isOperator(display.slice(-1))) return;
 
-  if (!operationStr) return;
+  const numbers = display.split(/[+\-×÷]/);
+  if (numbers.length < 2) return;
 
-  num1 = Number(operationStr[1]); // num1 (including negative)
-  operator = operationStr[2]; // operator
-  num2 = Number(operationStr[3]); // num2 (including negative)
-
-  // calculate
+  num1 = Number(numbers[0]);
+  num2 = Number(numbers[1]);
+  
   const result = equals(operator, num1, num2);
-
-  // display the result
   screen.textContent = result;
   display = result.toString();
-
-  // reset variables and set result as num1 for next operation
-  operatorSelected = false;
+  waitingForSecondNumber = false;
   num1 = result;
   num2 = null;
   operator = '';
   isDecimal = false;
+});
+
+clear.addEventListener('click', () => {
+  num1 = null;
+  num2 = null;
+  operator = '';
+  display = '';
+  screen.textContent = display;
+  operatorSelected = false;
+  isDecimal = false;
   canStartWithMinus = true;
+  waitingForSecondNumber = false;
 });
 
 // OLD EQUAL FUNCTION - not handling negative numbers //
@@ -200,17 +208,6 @@ equal.addEventListener('click', () => {
 //display = num1;
 //isDecimal = false;
 //});
-
-clear.addEventListener('click', () => {
-  num1 = null;
-  num2 = null;
-  operator = '';
-  display = '';
-  screen.textContent = display;
-  operatorSelected = false;
-  isDecimal = false;
-  canStartWithMinus = true;
-});
 
 decimal.addEventListener('click', () => {
   //press once - disabled
